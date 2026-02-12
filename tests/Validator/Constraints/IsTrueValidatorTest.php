@@ -7,6 +7,7 @@ use EWZ\Bundle\RecaptchaBundle\Validator\Constraints\IsTrueValidator;
 use PHPUnit\Framework\TestCase;
 use ReCaptcha\ReCaptcha;
 use ReCaptcha\Response;
+use Symfony\Component\HttpFoundation\InputBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -89,10 +90,7 @@ class IsTrueValidatorTest extends TestCase
         $request->expects(self::once())
             ->method('getClientIp')
             ->willReturn($clientIp);
-        $request->expects(self::once())
-            ->method('get')
-            ->with('g-recaptcha-response')
-            ->willReturn($recaptchaAnswer);
+        $request->request = new InputBag(['g-recaptcha-response' => $recaptchaAnswer]);
 
         if (\is_callable([$requestStack, 'getMainRequest'])) {
             $requestStack->expects(self::once())
@@ -145,10 +143,7 @@ class IsTrueValidatorTest extends TestCase
         $request->expects(self::once())
             ->method('getClientIp')
             ->willReturn($clientIp);
-        $request->expects(self::once())
-            ->method('get')
-            ->with('g-recaptcha-response')
-            ->willReturn($recaptchaAnswer);
+        $request->request = new InputBag(['g-recaptcha-response' => $recaptchaAnswer]);
         $request->expects(self::once())
             ->method('getHost')
             ->willReturn('host1');
@@ -207,10 +202,7 @@ class IsTrueValidatorTest extends TestCase
         $request->expects(self::once())
             ->method('getClientIp')
             ->willReturn($clientIp);
-        $request->expects(self::once())
-            ->method('get')
-            ->with('g-recaptcha-response')
-            ->willReturn($recaptchaAnswer);
+        $request->request = new InputBag(['g-recaptcha-response' => $recaptchaAnswer]);
         $request->expects(self::never())
             ->method('getHost');
 
@@ -269,10 +261,7 @@ class IsTrueValidatorTest extends TestCase
         $request->expects(self::once())
             ->method('getClientIp')
             ->willReturn($clientIp);
-        $request->expects(self::once())
-            ->method('get')
-            ->with('g-recaptcha-response')
-            ->willReturn($recaptchaAnswer);
+        $request->request = new InputBag(['g-recaptcha-response' => $recaptchaAnswer]);
         $request->expects(self::once())
             ->method('getHost')
             ->willReturn($host);
