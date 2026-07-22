@@ -1,10 +1,10 @@
 {
-  "name": "excelwebzone/recaptcha-bundle",
-  "description": "This bundle provides easy reCAPTCHA form field integration",
+  "name": "lephare/recaptcha-bundle",
+  "description": "This bundle provides easy reCAPTCHA form field integration (Le Phare maintained fork of excelwebzone/recaptcha-bundle)",
   "keywords": [
     "recaptcha"
   ],
-  "homepage": "https://github.com/excelwebzone/EWZRecaptchaBundle",
+  "homepage": "https://github.com/le-phare/EWZRecaptchaBundle",
   "type": "symfony-bundle",
   "license": "MIT",
   "authors": [
@@ -12,6 +12,10 @@
       "name": "Michael H. Arieli",
       "email": "excelwebzone@gmail.com",
       "homepage": "http://excelwebzone.com/"
+    },
+    {
+      "name": "Le Phare",
+      "homepage": "https://github.com/le-phare"
     }
   ],
   "require": {
