@@ -15,12 +15,21 @@ class IsTrue extends Constraint
 
     public $invalidHostMessage = 'The captcha was not resolved on the right domain.';
 
-    public function __construct(?array $options = null, ?string $message = null, ?string $invalidHostMessage = null, ?array $groups = null, mixed $payload = null)
+    /**
+     * @param mixed $payload
+     */
+    public function __construct(?array $options = null, ?string $message = null, ?string $invalidHostMessage = null, ?array $groups = null, $payload = null)
     {
-        parent::__construct($options ?? [], $groups, $payload);
+        parent::__construct($options);
 
-        $this->message = $message ?? $this->message;
-        $this->invalidHostMessage = $invalidHostMessage ?? $this->invalidHostMessage;
+        // Symfony < 5.1 has no $groups/$payload arguments and Symfony 8 ignores $options, so they are applied here.
+        $groups = $groups ?? $options['groups'] ?? null;
+        if (null !== $groups) {
+            $this->groups = (array) $groups;
+        }
+        $this->payload = $payload ?? $options['payload'] ?? $this->payload;
+        $this->message = $message ?? $options['message'] ?? $this->message;
+        $this->invalidHostMessage = $invalidHostMessage ?? $options['invalidHostMessage'] ?? $this->invalidHostMessage;
     }
 
     /**

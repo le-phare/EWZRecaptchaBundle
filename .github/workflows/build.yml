@@ -10,9 +10,12 @@ jobs:
   ewz:
     name: Symfony ${{ matrix.symfony }} (PHP ${{ matrix.php }})
     runs-on: ubuntu-latest
+    env:
+      # Composer >= 2.9 refuses packages with security advisories, which covers every old Symfony/Twig release we still test.
+      COMPOSER_NO_BLOCKING: 1
 
     strategy:
-      fail-fast: true
+      fail-fast: false
       matrix:
         php: [7.1, 7.2, 7.3, 7.4, 8.0, 8.1, 8.2]
         symfony: [2.8, 3.4, 4.4, 5.2, 6.0, 7.0]
@@ -46,9 +49,13 @@ jobs:
           # Symfony 8 requires PHP >= 8.4
           - php: 8.4
             symfony: 8.0
+          - php: 8.5
+            symfony: 8.0
+          - php: 8.4
+            symfony: 7.0
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install PHP
         uses: shivammathur/setup-php@v2
@@ -61,7 +68,7 @@ jobs:
         run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
 
       - name: Cache composer dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}

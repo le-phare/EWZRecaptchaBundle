@@ -5,6 +5,8 @@ EWZRecaptchaBundle
 
 This bundle provides easy reCAPTCHA form field for Symfony.
 
+It supports Symfony 2.8 to 8.x.
+
 ## Installation
 
 ### Step 1: Use composer and enable Bundle
@@ -330,6 +332,9 @@ public function buildForm(FormBuilder $builder, array $options)
     ));
     // ...
 ```
+
+> **NOTE**: Since Symfony 7.4, passing an array of options to a constraint is deprecated.
+> Use named arguments instead, e.g. `new RecaptchaTrue(message: 'Invalid captcha', groups: ['registration'])`.
 
 The form template resource is now auto registered via an extension of the container.
 However, you can always implement your own custom form widget.
