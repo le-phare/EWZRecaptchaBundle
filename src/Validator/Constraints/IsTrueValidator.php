@@ -88,10 +88,13 @@ class IsTrueValidator extends ConstraintValidator
         }
 
         // if we have an authorized role
-        if ($this->authorizationChecker
-            && count($this->trustedRoles) > 0
-            && $this->authorizationChecker->isGranted($this->trustedRoles)) {
-            return;
+        if ($this->authorizationChecker) {
+            // Voters ignore array attributes since Symfony 5, so each role is checked on its own.
+            foreach ($this->trustedRoles as $trustedRole) {
+                if ($this->authorizationChecker->isGranted($trustedRole)) {
+                    return;
+                }
+            }
         }
 
         if (\is_callable([$this->requestStack, 'getMainRequest'])) {
@@ -102,7 +105,8 @@ class IsTrueValidator extends ConstraintValidator
 
         $remoteip = $request->getClientIp();
         // define variable for recaptcha check answer
-        $answer = $request->get('g-recaptcha-response');
+        // Request::get() was removed in Symfony 8; read from the query then the body bag.
+        $answer = $request->query->get('g-recaptcha-response') ?? $request->request->get('g-recaptcha-response');
 
         // Verify user response with Google
         $response = $this->recaptcha->verify($answer, $remoteip);

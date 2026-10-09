@@ -1,9 +1,11 @@
 EWZRecaptchaBundle
 ==================
 
-[![Actions Status](https://github.com/excelwebzone/EWZRecaptchaBundle/workflows/CI/badge.svg)](https://github.com/excelwebzone/EWZRecaptchaBundle/actions)
+[![CI](https://github.com/le-phare/EWZRecaptchaBundle/actions/workflows/build.yml/badge.svg)](https://github.com/le-phare/EWZRecaptchaBundle/actions/workflows/build.yml)
 
 This bundle provides easy reCAPTCHA form field for Symfony.
+
+It supports Symfony 2.8 to 8.x.
 
 ## Installation
 
@@ -12,7 +14,7 @@ This bundle provides easy reCAPTCHA form field for Symfony.
 To install EWZRecaptchaBundle with Composer just type in your terminal:
 
 ```bash
-php composer.phar require excelwebzone/recaptcha-bundle
+php composer.phar require lephare/recaptcha-bundle
 ```
 
 Now, Composer will automatically download all required files, and install them
@@ -330,6 +332,9 @@ public function buildForm(FormBuilder $builder, array $options)
     ));
     // ...
 ```
+
+> **NOTE**: Since Symfony 7.4, passing an array of options to a constraint is deprecated.
+> Use named arguments instead, e.g. `new RecaptchaTrue(message: 'Invalid captcha', groups: ['registration'])`.
 
 The form template resource is now auto registered via an extension of the container.
 However, you can always implement your own custom form widget.
