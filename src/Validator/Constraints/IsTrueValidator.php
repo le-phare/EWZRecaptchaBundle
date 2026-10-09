@@ -88,10 +88,13 @@ class IsTrueValidator extends ConstraintValidator
         }
 
         // if we have an authorized role
-        if ($this->authorizationChecker
-            && count($this->trustedRoles) > 0
-            && $this->authorizationChecker->isGranted($this->trustedRoles)) {
-            return;
+        if ($this->authorizationChecker) {
+            // Voters ignore array attributes since Symfony 5, so each role is checked on its own.
+            foreach ($this->trustedRoles as $trustedRole) {
+                if ($this->authorizationChecker->isGranted($trustedRole)) {
+                    return;
+                }
+            }
         }
 
         if (\is_callable([$this->requestStack, 'getMainRequest'])) {

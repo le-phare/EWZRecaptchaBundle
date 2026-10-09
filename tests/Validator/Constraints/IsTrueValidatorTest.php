@@ -52,7 +52,7 @@ class IsTrueValidatorTest extends TestCase
 
         $authorizationChecker->expects(self::once())
             ->method('isGranted')
-            ->with($trustedRoles)
+            ->with('ROLE_TEST')
             ->willReturn(true);
 
         if (\is_callable([$requestStack, 'getMainRequest'])) {
@@ -64,6 +64,28 @@ class IsTrueValidatorTest extends TestCase
         }
 
         $validator = new IsTrueValidator(true, $reCaptcha, $requestStack, true, $authorizationChecker, $trustedRoles);
+        $validator->validate('', new IsTrue());
+    }
+
+    public function testAnyTrustedRoleIsNotValidated(): void
+    {
+        $reCaptcha = $this->createMock(ReCaptcha::class);
+        $reCaptcha->expects(self::never())
+            ->method('verify');
+        $requestStack = $this->createMock(RequestStack::class);
+        $authorizationChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $context = $this->createMock(ExecutionContextInterface::class);
+        $context->expects(self::never())
+            ->method('addViolation');
+
+        $authorizationChecker->expects(self::exactly(2))
+            ->method('isGranted')
+            ->willReturnCallback(function ($role) {
+                return 'ROLE_B' === $role;
+            });
+
+        $validator = new IsTrueValidator(true, $reCaptcha, $requestStack, true, $authorizationChecker, ['ROLE_A', 'ROLE_B']);
+        $validator->initialize($context);
         $validator->validate('', new IsTrue());
     }
 
@@ -82,7 +104,7 @@ class IsTrueValidatorTest extends TestCase
 
         $authorizationChecker->expects(self::once())
             ->method('isGranted')
-            ->with($trustedRoles)
+            ->with('ROLE_TEST')
             ->willReturn(false);
 
         $request = new Request([], ['g-recaptcha-response' => $recaptchaAnswer], [], [], [], ['REMOTE_ADDR' => $clientIp]);
@@ -128,7 +150,7 @@ class IsTrueValidatorTest extends TestCase
 
         $authorizationChecker->expects(self::once())
             ->method('isGranted')
-            ->with($trustedRoles)
+            ->with('ROLE_TEST')
             ->willReturn(false);
 
         $request = new Request([], ['g-recaptcha-response' => $recaptchaAnswer], [], [], [], ['REMOTE_ADDR' => $clientIp, 'HTTP_HOST' => 'host1']);
@@ -174,7 +196,7 @@ class IsTrueValidatorTest extends TestCase
 
         $authorizationChecker->expects(self::once())
             ->method('isGranted')
-            ->with($trustedRoles)
+            ->with('ROLE_TEST')
             ->willReturn(false);
 
         $request = new Request([], ['g-recaptcha-response' => $recaptchaAnswer], [], [], [], ['REMOTE_ADDR' => $clientIp]);
@@ -222,7 +244,7 @@ class IsTrueValidatorTest extends TestCase
 
         $authorizationChecker->expects(self::once())
             ->method('isGranted')
-            ->with($trustedRoles)
+            ->with('ROLE_TEST')
             ->willReturn(false);
 
         $request = new Request([], ['g-recaptcha-response' => $recaptchaAnswer], [], [], [], ['REMOTE_ADDR' => $clientIp, 'HTTP_HOST' => $host]);
